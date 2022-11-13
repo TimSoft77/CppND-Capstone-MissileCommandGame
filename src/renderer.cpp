@@ -31,6 +31,46 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "Renderer could not be created.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+
+  // Hide the cursor
+  SDL_ShowCursor(SDL_DISABLE);
+
+  // Load textures
+  SDL_Surface *loadingSurface; // temporary surface to load an image into the main memory
+
+  // Load background
+  loadingSurface = SDL_LoadBMP("../assets/missileBase.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "assets/missileBase.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  backgroundTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+
+  // Load missile
+  loadingSurface = SDL_LoadBMP("../assets/missile.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "../assets/missile.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  missileTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+
+  // Load targetter
+  // Load missile
+  loadingSurface = SDL_LoadBMP("../assets/targetter.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "../assets/targetter.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  targetterTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
 }
 
 Renderer::~Renderer() {
@@ -44,8 +84,11 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   block.h = screen_height / grid_height;
 
   // Clear screen
-  SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
+  SDL_SetRenderDrawColor(sdl_renderer, 64, 64, 64, 0xFF);
   SDL_RenderClear(sdl_renderer);
+
+ // Render background
+  SDL_RenderCopy(sdl_renderer, backgroundTexture, NULL, NULL);
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
@@ -70,6 +113,24 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);
+
+    SDL_Rect dstrect;
+  // Render missile
+  if (snake.missile.health)
+  {
+    dstrect.w = 32;
+    dstrect.h = 32;
+    dstrect.x = snake.missile.position.x - 16;
+    dstrect.y = snake.missile.position.y - 16;
+    SDL_RenderCopy(sdl_renderer, missileTexture, NULL, &dstrect);
+  }
+
+  // Render Targetter
+  dstrect.w = 64;
+  dstrect.h = 64;
+  dstrect.x = snake.mouseCursorPos.x - 32;
+  dstrect.y = snake.mouseCursorPos.y - 32;
+  SDL_RenderCopy(sdl_renderer, targetterTexture, NULL, &dstrect);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);

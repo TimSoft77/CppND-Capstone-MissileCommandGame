@@ -4,6 +4,14 @@
 #include <vector>
 #include "SDL.h"
 
+class Missile {
+  public:
+    SDL_Point position;
+    bool health = false;
+    int speed = 8;
+    SDL_Point target;
+};
+
 class Snake {
  public:
   enum class Direction { kUp, kDown, kLeft, kRight };
@@ -20,6 +28,9 @@ class Snake {
   bool SnakeCell(int x, int y);
 
   Direction direction = Direction::kUp;
+  bool fire = false;
+  Missile missile;
+  SDL_Point mouseCursorPos;
 
   float speed{0.1f};
   int size{1};

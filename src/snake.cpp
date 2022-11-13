@@ -17,6 +17,19 @@ void Snake::Update() {
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y) {
     UpdateBody(current_cell, prev_cell);
   }
+
+  // Fire control
+  if (fire && !missile.health) {
+    missile.position.x = 320; // TODO don't hardcode base location here
+    missile.position.y = 640;
+    missile.health = true;
+  }
+  if (missile.health) {
+    missile.position.y += missile.speed;
+    if (missile.position.y > 640 || missile.position.y < 0 || missile.position.x < 0 || missile.position.x > 640) { // TODO don't hardcode screen height
+      missile.health = false;
+    }
+  }
 }
 
 void Snake::UpdateHead() {

@@ -13,6 +13,9 @@ class Renderer {
 
   void Render(Snake const snake, SDL_Point const &food);
   void UpdateWindowTitle(int score, int fps);
+  SDL_Texture* backgroundTexture;
+  SDL_Texture* missileTexture;
+  SDL_Texture* targetterTexture;
 
  private:
   SDL_Window *sdl_window;

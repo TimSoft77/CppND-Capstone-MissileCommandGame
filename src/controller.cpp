@@ -35,7 +35,21 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
           ChangeDirection(snake, Snake::Direction::kRight,
                           Snake::Direction::kLeft);
           break;
+        }
+    }
+    else if (e.type == SDL_MOUSEBUTTONDOWN)
+    {
+      snake.fire = true;
+      if (snake.missile.health) {
+        SDL_GetMouseState(&snake.missile.target.x, &snake.missile.target.y); // Update target if a new missile will be launched.
       }
     }
+    else if (e.type == SDL_MOUSEBUTTONUP)
+    {
+      snake.fire = false;
+    }
   }
+
+  SDL_GetMouseState(&snake.mouseCursorPos.x, &snake.mouseCursorPos.y);
+
 }
