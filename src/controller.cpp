@@ -11,14 +11,9 @@ void Controller::HandleInput(bool &running, AirSpace &airSpace) const {
     }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
     {
-      airSpace.fire = true;
-      if (!airSpace.missile.health) {
-        SDL_GetMouseState(&airSpace.missile.target.x, &airSpace.missile.target.y); // Update target if a new missile will be launched.
-      }
-    }
-    else if (e.type == SDL_MOUSEBUTTONUP)
-    {
-      airSpace.fire = false;
+      SDL_Point target;
+      SDL_GetMouseState(&target.x, &target.y); // Update target if a new missile will be launched.
+      airSpace.LaunchMissile(target);
     }
   }
 

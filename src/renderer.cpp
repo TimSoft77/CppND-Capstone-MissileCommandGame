@@ -84,15 +84,15 @@ void Renderer::Render(AirSpace const airSpace) {
   SDL_RenderCopy(sdl_renderer, backgroundTexture, NULL, NULL);
 
     SDL_Rect dstrect;
-  // Render missile
-  if (airSpace.missile.health)
-  {
+  // Render missiles
+  for (Missile const &missile : airSpace.missiles) {
     dstrect.w = 32;
     dstrect.h = 32;
-    dstrect.x = airSpace.missile.position.x - 16;
-    dstrect.y = airSpace.missile.position.y - 16;
-    SDL_RenderCopy(sdl_renderer, missileTexture, NULL, &dstrect);
+    dstrect.x = missile.position.x - 16;
+    dstrect.y = missile.position.y - 16;
+    SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile.angle, NULL, SDL_FLIP_NONE);
   }
+  
 
   // Render Targetter
   dstrect.w = 64;
