@@ -1,55 +1,27 @@
 #include "controller.h"
 #include <iostream>
 #include "SDL.h"
-#include "snake.h"
+#include "airSpace.h"
 
-void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
-                                 Snake::Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1) snake.direction = input;
-  return;
-}
-
-void Controller::HandleInput(bool &running, Snake &snake) const {
+void Controller::HandleInput(bool &running, AirSpace &airSpace) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
       running = false;
-    } else if (e.type == SDL_KEYDOWN) {
-      switch (e.key.keysym.sym) {
-        case SDLK_UP:
-          ChangeDirection(snake, Snake::Direction::kUp,
-                          Snake::Direction::kDown);
-          break;
-
-        case SDLK_DOWN:
-          ChangeDirection(snake, Snake::Direction::kDown,
-                          Snake::Direction::kUp);
-          break;
-
-        case SDLK_LEFT:
-          ChangeDirection(snake, Snake::Direction::kLeft,
-                          Snake::Direction::kRight);
-          break;
-
-        case SDLK_RIGHT:
-          ChangeDirection(snake, Snake::Direction::kRight,
-                          Snake::Direction::kLeft);
-          break;
-        }
     }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
     {
-      snake.fire = true;
-      if (snake.missile.health) {
-        SDL_GetMouseState(&snake.missile.target.x, &snake.missile.target.y); // Update target if a new missile will be launched.
+      airSpace.fire = true;
+      if (!airSpace.missile.health) {
+        SDL_GetMouseState(&airSpace.missile.target.x, &airSpace.missile.target.y); // Update target if a new missile will be launched.
       }
     }
     else if (e.type == SDL_MOUSEBUTTONUP)
     {
-      snake.fire = false;
+      airSpace.fire = false;
     }
   }
 
-  SDL_GetMouseState(&snake.mouseCursorPos.x, &snake.mouseCursorPos.y);
+  SDL_GetMouseState(&airSpace.mouseCursorPos.x, &airSpace.mouseCursorPos.y);
 
 }
