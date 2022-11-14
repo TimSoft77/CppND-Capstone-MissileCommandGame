@@ -36,10 +36,10 @@ Renderer::Renderer(const std::size_t screen_width,
   SDL_Surface *loadingSurface; // temporary surface to load an image into the main memory
 
   // Load background
-  loadingSurface = SDL_LoadBMP("../assets/missileBase.bmp");
+  loadingSurface = SDL_LoadBMP("../assets/backgroundMoon.bmp");
   if (!loadingSurface) // Let the user know if the file failed to load
   {
-    SDL_Log("Failed to load image at %s: %s\n", "assets/missileBase.bmp", SDL_GetError());
+    SDL_Log("Failed to load image at %s: %s\n", "assets/backgroundMoon.bmp", SDL_GetError());
     return;
   }
   // loads image to our graphics hardware memory.
@@ -68,6 +68,31 @@ Renderer::Renderer(const std::size_t screen_width,
   // loads image to our graphics hardware memory.
   targetterTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
   SDL_FreeSurface(loadingSurface);
+
+  // Load cities
+  std::vector<std::string> cityPaths{
+      "../assets/NewYork.bmp",
+      "../assets/Paris.bmp",
+      "../assets/Shanghai.bmp",
+      "../assets/Singapore.bmp",
+      "../assets/London.bmp",
+      "../assets/KualaLumpur.bmp",
+      "../assets/Dubai.bmp",
+      "../assets/Barcelona.bmp",
+      "../assets/Bangkok.bmp"};
+
+  for (std::string path : cityPaths)
+  {
+    loadingSurface = SDL_LoadBMP(&path[0]);
+    if (!loadingSurface) // Let the user know if the file failed to load
+    {
+      SDL_Log("Failed to load image at %s: %s\n", path, SDL_GetError());
+      return;
+    }
+    // loads image to our graphics hardware memory.
+    cityTextures.emplace_back(SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface));
+    SDL_FreeSurface(loadingSurface);
+  }
 }
 
 Renderer::~Renderer() {
@@ -83,7 +108,22 @@ void Renderer::Render(AirSpace const &airSpace) {
  // Render background
   SDL_RenderCopy(sdl_renderer, backgroundTexture, NULL, NULL);
 
+// Initialize a rectangle, to be used for all renders
     SDL_Rect dstrect;
+
+  // Render cities
+  int i = 0;
+  for (City const &city : airSpace.cities) {
+    dstrect.w = 100;
+    dstrect.h = 100;
+    dstrect.x = city.position.x - 50;
+    dstrect.y = city.position.y - 100;
+    SDL_RenderCopy(sdl_renderer, cityTextures[i], NULL, &dstrect);
+    i++;
+    // Loops back to the first texture if there are more cities than textures
+    if (i >= cityTextures.size()) { i = 0;}
+  }
+
   // Render missiles
   for (auto const& missile : airSpace.missiles) {
     dstrect.w = 32;

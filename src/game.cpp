@@ -3,10 +3,7 @@
 #include "SDL.h"
 
 Game::Game()
-    : airSpace(),
-      engine(dev()),
-      random_w(0, static_cast<int>(640 - 1)), // TODO These shouldn't be hard-coded
-      random_h(0, static_cast<int>(640 - 1)) {
+    : airSpace() {
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -23,7 +20,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, airSpace);
-    Update();
+    airSpace.Update();
     renderer.Render(airSpace);
 
     frame_end = SDL_GetTicks();
@@ -47,12 +44,6 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
-}
-
-void Game::Update() {
-
-  airSpace.Update();
-
 }
 
 int Game::GetScore() const { return score; }
