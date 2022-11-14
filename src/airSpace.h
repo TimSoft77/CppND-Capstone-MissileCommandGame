@@ -6,16 +6,28 @@
 #include <memory>
 #include <random>
 
+enum MissileState{
+  FLIGHT,
+  DETONATED,
+  AIR_BLAST,
+  LAND_DET,
+  SHOT_DOWN,
+  GONE
+};
+
 class Missile {
   public:
     virtual void Move() = 0;
     SDL_Point position;
-    bool hasReachedTarget = false;
+    MissileState state{FLIGHT};
     double angle;
+    float blastRadius = 40;
   protected:
     int speed = 4;
     SDL_Point initPosition;
     SDL_Point target;
+    int cloudCounter{0}; // Timer in frames since missile blew up
+    int cloudResideTime{60}; // Frames missile explosion remains on-screen
 };
 
 class DefensiveMissile : public Missile {
@@ -60,6 +72,7 @@ class AirSpace {
   std::uniform_real_distribution<double> randomProp;
   const int maxMissiles = 24; // Includes friendly missiles
   const double missileGenProb = 0.01; // Probability of generating a missile in a given frame
+  int blastResideTime = 130; // Frames that missile explosions stick around
 };
 
 #endif
