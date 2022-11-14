@@ -74,8 +74,17 @@ void AirSpace::Update()
                  missiles.end());
 }
 
-void AirSpace::LaunchMissile(SDL_Point target) {
-  missiles.emplace_back(std::make_unique<DefensiveMissile>(target));
+// Launch a missile, provided any cities are left
+void AirSpace::LaunchMissile(SDL_Point target)
+{
+  if (CountSurvivingCities() > 0)
+  {
+    missiles.emplace_back(std::make_unique<DefensiveMissile>(target));
+  }
+}
+
+int AirSpace::CountSurvivingCities() {
+  return std::count_if(cities.begin(), cities.end(), [&](auto const &c) {return c.isAlive;});
 }
 
 // Creates a missile with a target, and calculates its path of flight.
@@ -101,11 +110,11 @@ void DefensiveMissile::Move() {
   } else if (state == FLIGHT) {
     position = target;
     state = DETONATED;
-  } else {
+  } else  if (state != GONE) {
+      cloudCounter++;
     if (cloudCounter > cloudResideTime) {
       state = GONE;
     }
-    cloudCounter++;
   }
 }
 
@@ -133,11 +142,11 @@ void HostileMissile::Move() {
   } else if (state == FLIGHT) {
     position = target;
     state = DETONATED;
-  } else {
+  } else  if (state != GONE) {
+      cloudCounter++;
     if (cloudCounter > cloudResideTime) {
       state = GONE;
     }
-    cloudCounter++;
   }
 }
 

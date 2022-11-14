@@ -30,8 +30,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_count++;
     frame_duration = frame_end - frame_start;
 
-    // After every second, update the window title.
+    // After every second, update the window title and increase the score based on surviving cities.
     if (frame_end - title_timestamp >= 1000) {
+      score += airSpace.CountSurvivingCities();
       renderer.UpdateWindowTitle(score, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;

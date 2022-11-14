@@ -21,13 +21,13 @@ class Missile {
     SDL_Point position;
     MissileState state{FLIGHT};
     double angle;
-    float blastRadius = 40;
+    float blastRadius = 100;
   protected:
     int speed = 4;
     SDL_Point initPosition;
     SDL_Point target;
     int cloudCounter{0}; // Timer in frames since missile blew up
-    int cloudResideTime{60}; // Frames missile explosion remains on-screen
+    int cloudResideTime{40}; // Frames missile explosion remains on-screen
 };
 
 class DefensiveMissile : public Missile {
@@ -60,6 +60,7 @@ class AirSpace {
   AirSpace();
   void Update();
   void LaunchMissile(SDL_Point t);
+  int CountSurvivingCities();
 
   SDL_Point mouseCursorPos;
   std::vector<std::unique_ptr<Missile>> missiles;

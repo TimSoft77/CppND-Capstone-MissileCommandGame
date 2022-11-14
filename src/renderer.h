@@ -16,6 +16,9 @@ class Renderer {
   SDL_Texture* missileTexture;
   SDL_Texture* targetterTexture;
   std::vector<SDL_Texture*> cityTextures;
+  SDL_Texture* airBlastTexture;
+  SDL_Texture* landDetTexture;
+  SDL_Texture* ruinedCityTexture;
 
  private:
   SDL_Window *sdl_window;

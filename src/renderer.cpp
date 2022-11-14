@@ -69,6 +69,39 @@ Renderer::Renderer(const std::size_t screen_width,
   targetterTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
   SDL_FreeSurface(loadingSurface);
 
+  // Load explosion
+  loadingSurface = SDL_LoadBMP("../assets/explosion.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "../assets/explosion.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  airBlastTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+
+  // Load nuke
+  loadingSurface = SDL_LoadBMP("../assets/nuke.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "../assets/nuke.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  landDetTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+
+  // Load ruined city
+  loadingSurface = SDL_LoadBMP("../assets/ruinedCity.bmp");
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", "../assets/ruinedCity.bmp", SDL_GetError());
+    return;
+  }
+  // loads image to our graphics hardware memory.
+  ruinedCityTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+
   // Load cities
   std::vector<std::string> cityPaths{
       "../assets/NewYork.bmp",
@@ -111,37 +144,75 @@ void Renderer::Render(AirSpace const &airSpace) {
 // Initialize a rectangle, to be used for all renders
     SDL_Rect dstrect;
 
-  // Render cities
-  int i = 0;
-  for (City const &city : airSpace.cities) {
-    dstrect.w = 100;
-    dstrect.h = 100;
-    dstrect.x = city.position.x - 50;
-    dstrect.y = city.position.y - 100;
-    SDL_RenderCopy(sdl_renderer, cityTextures[i], NULL, &dstrect);
-    i++;
-    // Loops back to the first texture if there are more cities than textures
-    if (i >= cityTextures.size()) { i = 0;}
-  }
+    // Render cities
+    int i = 0;
+    for (City const &city : airSpace.cities)
+    {
+      dstrect.w = 100;
+      dstrect.h = 100;
+      dstrect.x = city.position.x - 50;
+      dstrect.y = city.position.y - 100;
+      if (city.isAlive)
+      {
+        SDL_RenderCopy(sdl_renderer, cityTextures[i], NULL, &dstrect);
+      }
+      else
+      {
+        SDL_RenderCopy(sdl_renderer, ruinedCityTexture, NULL, &dstrect);
+      }
+      i++;
+      // Loops back to the first texture if there are more cities than textures
+      if (i >= cityTextures.size())
+      {
+        i = 0;
+      }
+    }
 
-  // Render missiles
-  for (auto const& missile : airSpace.missiles) {
-    dstrect.w = 32;
-    dstrect.h = 32;
-    dstrect.x = missile->position.x - 16;
-    dstrect.y = missile->position.y - 16;
-    SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile->angle, NULL, SDL_FLIP_NONE);
-  }
-  
-  // Render Targetter
-  dstrect.w = 64;
-  dstrect.h = 64;
-  dstrect.x = airSpace.mouseCursorPos.x - 32;
-  dstrect.y = airSpace.mouseCursorPos.y - 32;
-  SDL_RenderCopy(sdl_renderer, targetterTexture, NULL, &dstrect);
+    // Render missiles
+    for (auto const &missile : airSpace.missiles)
+    {
 
-  // Update Screen
-  SDL_RenderPresent(sdl_renderer);
+      switch (missile->state)
+      {
+      case FLIGHT:
+        dstrect.w = 32;
+        dstrect.h = 32;
+        dstrect.x = missile->position.x - 16;
+        dstrect.y = missile->position.y - 16;
+        SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile->angle, NULL, SDL_FLIP_NONE);
+        break;
+      case AIR_BLAST:
+        dstrect.w = missile->blastRadius;
+        dstrect.h = missile->blastRadius;
+        dstrect.x = missile->position.x - missile->blastRadius / 2;
+        dstrect.y = missile->position.y - missile->blastRadius / 2;
+        SDL_RenderCopy(sdl_renderer, airBlastTexture, NULL, &dstrect);
+        break;
+      case LAND_DET:
+        dstrect.w = missile->blastRadius;
+        dstrect.h = missile->blastRadius;
+        dstrect.x = missile->position.x - missile->blastRadius / 2;
+        dstrect.y = missile->position.y - missile->blastRadius / 2;
+        SDL_RenderCopy(sdl_renderer, landDetTexture, NULL, &dstrect);
+        break;
+      case SHOT_DOWN:
+        dstrect.w = 32;
+        dstrect.h = 32;
+        dstrect.x = missile->position.x - 16;
+        dstrect.y = missile->position.y - 16;
+        SDL_RenderCopy(sdl_renderer, airBlastTexture, NULL, &dstrect);
+      }
+    }
+
+    // Render Targetter
+    dstrect.w = 64;
+    dstrect.h = 64;
+    dstrect.x = airSpace.mouseCursorPos.x - 32;
+    dstrect.y = airSpace.mouseCursorPos.y - 32;
+    SDL_RenderCopy(sdl_renderer, targetterTexture, NULL, &dstrect);
+
+    // Update Screen
+    SDL_RenderPresent(sdl_renderer);
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
