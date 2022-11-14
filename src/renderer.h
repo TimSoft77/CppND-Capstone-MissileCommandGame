@@ -10,7 +10,7 @@ class Renderer {
   Renderer(const std::size_t screen_width, const std::size_t screen_height);
   ~Renderer();
 
-  void Render(AirSpace const airSpace);
+  void Render(AirSpace const &airSpace);
   void UpdateWindowTitle(int score, int fps);
   SDL_Texture* backgroundTexture;
   SDL_Texture* missileTexture;

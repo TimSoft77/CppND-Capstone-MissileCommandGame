@@ -75,7 +75,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(AirSpace const airSpace) {
+void Renderer::Render(AirSpace const &airSpace) {
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 64, 64, 64, 0xFF);
   SDL_RenderClear(sdl_renderer);
@@ -85,15 +85,14 @@ void Renderer::Render(AirSpace const airSpace) {
 
     SDL_Rect dstrect;
   // Render missiles
-  for (Missile const &missile : airSpace.missiles) {
+  for (auto const& missile : airSpace.missiles) {
     dstrect.w = 32;
     dstrect.h = 32;
-    dstrect.x = missile.position.x - 16;
-    dstrect.y = missile.position.y - 16;
-    SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile.angle, NULL, SDL_FLIP_NONE);
+    dstrect.x = missile->position.x - 16;
+    dstrect.y = missile->position.y - 16;
+    SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile->angle, NULL, SDL_FLIP_NONE);
   }
   
-
   // Render Targetter
   dstrect.w = 64;
   dstrect.h = 64;
