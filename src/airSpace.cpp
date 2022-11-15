@@ -59,6 +59,7 @@ void AirSpace::Update()
       if (missile->position.y > 640 - missile->blastRadius)
       {
         missile->state = LAND_DET;
+        missile->position.y = 640 - 1; // Draw land detonations on the horizon TODO should not be hardcoded
       }
       else
       {

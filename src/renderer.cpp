@@ -2,6 +2,20 @@
 #include <iostream>
 #include <string>
 
+SDL_Texture* Renderer::LoadTexture(std::string path)
+{
+  loadingSurface = SDL_LoadBMP(&path[0]);
+  if (!loadingSurface) // Let the user know if the file failed to load
+  {
+    SDL_Log("Failed to load image at %s: %s\n", path, SDL_GetError());
+    return nullptr;
+  }
+  // loads image to our graphics hardware memory.
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
+  SDL_FreeSurface(loadingSurface);
+  return texture;
+}
+
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height)
     : screen_width(screen_width),
@@ -33,98 +47,29 @@ Renderer::Renderer(const std::size_t screen_width,
   SDL_ShowCursor(SDL_DISABLE);
 
   // Load textures
-  SDL_Surface *loadingSurface; // temporary surface to load an image into the main memory
 
   // Load background
-  loadingSurface = SDL_LoadBMP("../assets/backgroundMoon.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "assets/backgroundMoon.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  backgroundTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
-
-  // Load missile
-  loadingSurface = SDL_LoadBMP("../assets/missile.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "../assets/missile.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  missileTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
+  backgroundTexture = LoadTexture(backgroundTexturePath);
 
   // Load targetter
+  targetterTexture = LoadTexture(targetterTexturePath);
+
   // Load missile
-  loadingSurface = SDL_LoadBMP("../assets/targetter.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "../assets/targetter.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  targetterTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
+  missileTexture = LoadTexture(missileTexturePath);
 
   // Load explosion
-  loadingSurface = SDL_LoadBMP("../assets/explosion.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "../assets/explosion.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  airBlastTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
+  airBlastTexture = LoadTexture(airBlastTexturePath);
 
   // Load nuke
-  loadingSurface = SDL_LoadBMP("../assets/nuke.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "../assets/nuke.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  landDetTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
+  landDetTexture = LoadTexture(landDetTexturePath);
 
   // Load ruined city
-  loadingSurface = SDL_LoadBMP("../assets/ruinedCity.bmp");
-  if (!loadingSurface) // Let the user know if the file failed to load
-  {
-    SDL_Log("Failed to load image at %s: %s\n", "../assets/ruinedCity.bmp", SDL_GetError());
-    return;
-  }
-  // loads image to our graphics hardware memory.
-  ruinedCityTexture = SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface);
-  SDL_FreeSurface(loadingSurface);
+ ruinedCityTexture = LoadTexture(ruinedCityTexturePath);
 
   // Load cities
-  std::vector<std::string> cityPaths{
-      "../assets/NewYork.bmp",
-      "../assets/Paris.bmp",
-      "../assets/Shanghai.bmp",
-      "../assets/Singapore.bmp",
-      "../assets/London.bmp",
-      "../assets/KualaLumpur.bmp",
-      "../assets/Dubai.bmp",
-      "../assets/Barcelona.bmp",
-      "../assets/Bangkok.bmp"};
-
-  for (std::string path : cityPaths)
+  for (std::string path : cityTexturePaths)
   {
-    loadingSurface = SDL_LoadBMP(&path[0]);
-    if (!loadingSurface) // Let the user know if the file failed to load
-    {
-      SDL_Log("Failed to load image at %s: %s\n", path, SDL_GetError());
-      return;
-    }
-    // loads image to our graphics hardware memory.
-    cityTextures.emplace_back(SDL_CreateTextureFromSurface(sdl_renderer, loadingSurface));
-    SDL_FreeSurface(loadingSurface);
+    cityTextures.emplace_back(LoadTexture(path));
   }
 }
 
@@ -192,7 +137,7 @@ void Renderer::Render(AirSpace const &airSpace) {
         dstrect.w = missile->blastRadius;
         dstrect.h = missile->blastRadius;
         dstrect.x = missile->position.x - missile->blastRadius / 2;
-        dstrect.y = missile->position.y - missile->blastRadius / 2;
+        dstrect.y = missile->position.y - missile->blastRadius * 0.8; // 0.8 is a hack to make the current landDetTexture show up on the horizon
         SDL_RenderCopy(sdl_renderer, landDetTexture, NULL, &dstrect);
         break;
       case SHOT_DOWN:
