@@ -15,9 +15,11 @@ enum MissileState{
   GONE
 };
 
+// Abstract class for all missile types
 class Missile {
   public:
     virtual void Move() = 0;
+    virtual void React(std::vector<std::unique_ptr<Missile>> &missiles) {}; // By default this won't be implemented
     SDL_Point position;
     MissileState state{FLIGHT};
     double angle;
@@ -48,6 +50,19 @@ class HostileMissile : public Missile {
     double flightDuration; // The number of frames the missile will take to reach its target
 };
 
+class SmartMissile : public Missile {
+  public:
+    SmartMissile(int start_x, int target_x);
+    void Move();
+    void React(std::vector<std::unique_ptr<Missile>> &missiles);
+  private:
+    int dx;
+    int dy;
+    double avoidanceRange = 250;
+    int reactInterval = 20;
+    int reactTimer = 0;
+};
+
 class City {
   public:
     SDL_Point position;
@@ -74,6 +89,7 @@ class AirSpace {
   const int maxMissiles = 24; // Includes friendly missiles
   const double missileGenProb = 0.01; // Probability of generating a missile in a given frame
   int blastResideTime = 130; // Frames that missile explosions stick around
+  double smartMissileGenProb = 1; // Probability that a missile created is a smart missile, givent that a hostile missile is generated TODO reduce once tested
 };
 
 #endif
