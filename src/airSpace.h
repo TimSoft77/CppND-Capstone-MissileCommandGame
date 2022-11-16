@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include <memory>
 #include <random>
+#include <mutex>
 
 enum MissileState{
   FLIGHT,
@@ -19,7 +20,7 @@ enum MissileState{
 class Missile {
   public:
     virtual void Move() = 0;
-    virtual void React(std::vector<std::unique_ptr<Missile>> &missiles) {}; // By default this won't be implemented
+    virtual void React(std::vector<std::shared_ptr<Missile>> missiles) = 0;
     SDL_Point position;
     MissileState state{FLIGHT};
     double angle;
@@ -32,29 +33,34 @@ class Missile {
     int cloudResideTime{40}; // Frames missile explosion remains on-screen
 };
 
+// Missile launched by player.  Travels in straight line from the missile base to where the cursor was when launched.
 class DefensiveMissile : public Missile {
   public:
     DefensiveMissile(SDL_Point t);
     void Move();
+    void React(std::vector<std::shared_ptr<Missile>> missiles) {};
   private:
     int flightTimeElapsed = 0; // the number of frames since the missile's creation
     double flightDuration; // The number of frames the missile will take to reach its target
 };
 
+// Goes in straight line from top of screen to bottom of screen.
 class HostileMissile : public Missile {
   public:
     HostileMissile(int start_x, int target_x);
     void Move();
+    void React(std::vector<std::shared_ptr<Missile>> missiles) {};
   private:
     int flightTimeElapsed = 0; // the number of frames since the missile's creation
     double flightDuration; // The number of frames the missile will take to reach its target
 };
 
+// Missile that dodges incoming missiles.
 class SmartMissile : public Missile {
   public:
     SmartMissile(int start_x, int target_x);
     void Move();
-    void React(std::vector<std::unique_ptr<Missile>> &missiles);
+    void React(std::vector<std::shared_ptr<Missile>> missiles);
   private:
     int dx;
     int dy;
@@ -70,6 +76,7 @@ class City {
     City(int x, int y);
 };
 
+// Essentially the missile-command specific game object.
 class AirSpace {
  public:
   AirSpace();
@@ -78,7 +85,7 @@ class AirSpace {
   int CountSurvivingCities();
 
   SDL_Point mouseCursorPos;
-  std::vector<std::unique_ptr<Missile>> missiles;
+  std::vector<std::shared_ptr<Missile>> missiles;
   std::vector<City> cities;
 
  private:
@@ -89,7 +96,7 @@ class AirSpace {
   const int maxMissiles = 24; // Includes friendly missiles
   const double missileGenProb = 0.01; // Probability of generating a missile in a given frame
   int blastResideTime = 130; // Frames that missile explosions stick around
-  double smartMissileGenProb = 1; // Probability that a missile created is a smart missile, givent that a hostile missile is generated TODO reduce once tested
+  double smartMissileGenProb = 0.5; // Probability that a missile created is a smart missile, givent that a hostile missile is generated TODO reduce once tested
 };
 
 #endif
