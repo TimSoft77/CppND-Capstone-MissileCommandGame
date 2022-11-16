@@ -1,12 +1,37 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Capstone: Missile Command
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is a remake of the classic arcade game Missile Command, for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213).  The code used the Udacity Snake Game starter code (https://github.com/udacity/CppND-Capstone-Snake-Game) as a starting point.
 
-<img src="snake_game.gif"/>
+<img src="MissileCommand.gif"/>
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
+## Features
+Hostile missiles rain down to destroy your cities.  Some are smart missiles, and will try to dodge missiles ahead of them.
 
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+Clicking on the screen will launch a missile in a straight line to the cursor location, where it will detonate, destroying nearby missiles.
+
+Score increments every second by the number of surviving cities.
+
+Only one missile base has been implemented, and the player has infinite missiles.
+
+## Code Structure
+All files except airSpace.cpp and airSpace.h follow the Snake Game starter code.  Controller has been modified to use mouse input.  Renderer has been modified to load external textures.
+
+Game has been gutted to be a generic game engine.  All Missile Command specific logic has been implemented in AirSpace.
+
+## Rubric Points
+The project demonstrates an understanding of C++ functions and control structures. - various, airSpace.cpp 28 onwards
+The project reads data from a file and process the data, or the program writes data to a file. - renderer.cpp 5
+The project accepts user input and processes the input. - controller.cpp 15
+The project uses Object Oriented Programming techniques. - airSpace.h 24
+Classes use appropriate access specifiers for class members. - airSpace.h 24
+Class constructors utilize member initialization lists. - renderer.cpp 19, albeit only a slight modification of the starter code
+Classes abstract implementation details from their interfaces.  - airSpace.h 24
+Classes follow an appropriate inheritance hierarchy.  - airSpace.h 24
+Derived class functions override virtual base class functions.  - airSpace.h 27
+The project makes use of references in function declarations. - airSpace.cpp 12, 24
+The project uses smart pointers instead of raw pointers. - airSpace.h 102, though I'm not sure it's necessary
+The project uses multithreading. - airSpace.cpp 37.  Definitely not necessary here; purely done to play with Multithreading.
+A promise and future is used in the project. - airSpace.cpp 37
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
@@ -26,21 +51,7 @@ In this project, you can build your own C++ application or extend this Snake gam
 ## Basic Build Instructions
 
 1. Clone this repo.
+2. Adjust 'CMakeLists.txt' to accomodate the local environment.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./SnakeGame`.
-
-
-## CC Attribution-ShareAlike 4.0 International
-
-
-Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
-
-This work is licensed under a
-[Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
-
-[![CC BY-SA 4.0][cc-by-sa-image]][cc-by-sa]
-
-[cc-by-sa]: http://creativecommons.org/licenses/by-sa/4.0/
-[cc-by-sa-image]: https://licensebuttons.net/l/by-sa/4.0/88x31.png
-[cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg

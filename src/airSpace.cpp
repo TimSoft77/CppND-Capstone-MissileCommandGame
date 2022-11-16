@@ -33,7 +33,6 @@ void AirSpace::Update()
   std::vector<std::future<void>> futures;
   for (auto &missile : missiles)
   {
-
     futures.emplace_back(std::async(&Missile::React, missile, missiles));
   }
   for (const std::future<void> &ftr : futures)
