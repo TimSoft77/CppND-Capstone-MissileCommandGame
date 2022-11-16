@@ -5,6 +5,9 @@
 #include <thread>
 #include <future>
 
+const short int K_SCREEN_WIDTH = 640;
+const short int K_SCREEN_HEIGHT = 640;
+
 // Calculate the Euclidean distance between two points in 2d space
 float distance(SDL_Point const &p1, SDL_Point const &p2)
 {
@@ -12,7 +15,7 @@ float distance(SDL_Point const &p1, SDL_Point const &p2)
 }
 
 AirSpace::AirSpace() : engine(dev()),
-                       random_w(0, static_cast<int>(640 - 1)), // TODO These shouldn't be hard-coded
+                       random_w(0, static_cast<int>(K_SCREEN_WIDTH - 1)),
                        randomProp(0.0, 1.0)
 {
   // Creating cities.  Locations are hard-coded because I don't necessarily want to space them to a pattern.
@@ -81,7 +84,7 @@ void AirSpace::Update()
       if (missile->position.y > 640 - missile->blastRadius)
       {
         missile->state = LAND_DET;
-        missile->position.y = 640 - 1; // Draw land detonations on the horizon TODO should not be hardcoded
+        missile->position.y = K_SCREEN_WIDTH - 1;
       }
       else
       {
@@ -116,8 +119,8 @@ int AirSpace::CountSurvivingCities()
 DefensiveMissile::DefensiveMissile(SDL_Point t)
 {
   target = t;
-  position.x = 320; // TODO don't hardcode base location here
-  position.y = 640;
+  position.x = K_SCREEN_WIDTH / 2; // Base in center-bottom of screen
+  position.y = K_SCREEN_HEIGHT;
   initPosition = position;
   angle = atan2(target.x - position.x, position.y - target.y) * 180 / M_PI;
   // x and y deltas are flipped to get the angle away from the positive vertical axis.
@@ -216,7 +219,7 @@ void SmartMissile::Move()
       position.y = 640;
       state = DETONATED;
     }
-    else if (position.x < 0 || position.x > 640 - 1) // Remove missiles that have flown off the screen TODO should not be hardcoded
+    else if (position.x < 0 || position.x > K_SCREEN_WIDTH - 1) // Remove missiles that have flown off the screen
     {
       state = GONE;
     }

@@ -117,7 +117,7 @@ void Renderer::Render(AirSpace const &airSpace) {
     for (auto const &missile : airSpace.missiles)
     {
 
-      switch (missile->state)
+      switch (missile->state) // Multipliers are trial-and-error hacks to make stuff look good
       {
       case FLIGHT:
         dstrect.w = 32;
@@ -127,17 +127,17 @@ void Renderer::Render(AirSpace const &airSpace) {
         SDL_RenderCopyEx(sdl_renderer, missileTexture, NULL, &dstrect, missile->angle, NULL, SDL_FLIP_NONE);
         break;
       case AIR_BLAST:
-        dstrect.w = missile->blastRadius;
-        dstrect.h = missile->blastRadius;
+        dstrect.w = missile->blastRadius*1.2;
+        dstrect.h = missile->blastRadius*1.2;
         dstrect.x = missile->position.x - missile->blastRadius / 2;
         dstrect.y = missile->position.y - missile->blastRadius / 2;
         SDL_RenderCopy(sdl_renderer, airBlastTexture, NULL, &dstrect);
         break;
       case LAND_DET:
-        dstrect.w = missile->blastRadius;
-        dstrect.h = missile->blastRadius;
+        dstrect.w = missile->blastRadius*1.4;
+        dstrect.h = missile->blastRadius*1.4;
         dstrect.x = missile->position.x - missile->blastRadius / 2;
-        dstrect.y = missile->position.y - missile->blastRadius * 0.8; // 0.8 is a hack to make the current landDetTexture show up on the horizon
+        dstrect.y = missile->position.y - missile->blastRadius * 1.25;
         SDL_RenderCopy(sdl_renderer, landDetTexture, NULL, &dstrect);
         break;
       case SHOT_DOWN:
