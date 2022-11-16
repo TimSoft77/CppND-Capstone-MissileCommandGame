@@ -19,19 +19,19 @@ All files except airSpace.cpp and airSpace.h follow the Snake Game starter code.
 Game has been gutted to be a generic game engine.  All Missile Command specific logic has been implemented in AirSpace.
 
 ## Rubric Points
-The project demonstrates an understanding of C++ functions and control structures. - various, airSpace.cpp 28 onwards
-The project reads data from a file and process the data, or the program writes data to a file. - renderer.cpp 5
-The project accepts user input and processes the input. - controller.cpp 15
-The project uses Object Oriented Programming techniques. - airSpace.h 24
-Classes use appropriate access specifiers for class members. - airSpace.h 24
-Class constructors utilize member initialization lists. - renderer.cpp 19, albeit only a slight modification of the starter code
-Classes abstract implementation details from their interfaces.  - airSpace.h 24
-Classes follow an appropriate inheritance hierarchy.  - airSpace.h 24
-Derived class functions override virtual base class functions.  - airSpace.h 27
-The project makes use of references in function declarations. - airSpace.cpp 12, 24
-The project uses smart pointers instead of raw pointers. - airSpace.h 102, though I'm not sure it's necessary
-The project uses multithreading. - airSpace.cpp 37.  Definitely not necessary here; purely done to play with Multithreading.
-A promise and future is used in the project. - airSpace.cpp 37
+* The project demonstrates an understanding of C++ functions and control structures. - various, airSpace.cpp 28 onwards
+* The project reads data from a file and process the data, or the program writes data to a file. - renderer.cpp 5
+* The project accepts user input and processes the input. - controller.cpp 15
+* The project uses Object Oriented Programming techniques. - airSpace.h 24
+* Classes use appropriate access specifiers for class members. - airSpace.h 24
+* Class constructors utilize member initialization lists. - renderer.cpp 19, albeit only a slight modification of the starter code
+* Classes abstract implementation details from their interfaces.  - airSpace.h 24
+* Classes follow an appropriate inheritance hierarchy.  - airSpace.h 24
+* Derived class functions override virtual base class functions.  - airSpace.h 27
+* The project makes use of references in function declarations. - airSpace.cpp 12, 24
+* The project uses smart pointers instead of raw pointers. - airSpace.h 102, though I'm not sure it's necessary
+* The project uses multithreading. - airSpace.cpp 37.  Definitely not necessary here; purely done to play with Multithreading.
+* A promise and future is used in the project. - airSpace.cpp 37
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
